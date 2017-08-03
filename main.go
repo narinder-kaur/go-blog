@@ -2,7 +2,8 @@ package main
 
 import (
 	"net/http"
-	"log"
+	`first_web_app/models`
+	"fmt"
 )
 
 type signup string
@@ -14,10 +15,11 @@ func (c signup) ServeHTTP(res http.ResponseWriter, req *http.Request){
 }
 
 func (c saveuser) ServeHTTP(res http.ResponseWriter, req *http.Request){
-	req.ParseForm();
-	data := req.Form;
-	for key,value := range data {
-		
+	req.ParseForm()
+	u := models.User{Name:req.PostFormValue("name"),Email:req.PostFormValue("email"),Password:req.PostFormValue("password")}
+	if ok, err := u.Validate(); (ok == true && err == nil) {
+		fmt.Println("saving");
+		fmt.Println(u.Save());
 	}
 }
 
