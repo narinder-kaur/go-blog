@@ -14,7 +14,7 @@ func main(){
 	}
 
 	for _,query := range queries {
-	result := core.Execute(query)
+	result, _ := core.Execute(query)
 	fmt.Println(result);
 	}
 }

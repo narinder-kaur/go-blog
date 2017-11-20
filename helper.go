@@ -32,3 +32,5 @@ if err != nil { // if there is an error
   	  log.Print("template executing error: ", err) //log it
   	}
 }
+
+
