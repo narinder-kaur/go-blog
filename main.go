@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	
 	"net/http"
 	`first_web_app/models` 
@@ -15,6 +16,7 @@ type login string
 type logout string
 type newblog string
 
+
 var sessionManager = scs.NewCookieManager("u46IpCV9y5Vlur8YvODJEhgOY8m9JVE4")
 
 
@@ -22,6 +24,7 @@ var sessionManager = scs.NewCookieManager("u46IpCV9y5Vlur8YvODJEhgOY8m9JVE4")
 func (c signup) ServeHTTP(res http.ResponseWriter, req *http.Request){
 	view("signup",nil, res)
 }
+
 
 func (h homepage) ServeHTTP(res http.ResponseWriter, req *http.Request){
 	session := sessionManager.Load(req)
@@ -36,6 +39,13 @@ func (h homepage) ServeHTTP(res http.ResponseWriter, req *http.Request){
 func (c newblog) ServeHTTP(res http.ResponseWriter, req *http.Request){
 	if(req.Method == http.MethodGet){
 		view("newblog",nil, res)
+	}
+
+	if(req.Method == http.MethodPost){
+		fmt.Println(req.PostFormValue("title"));
+		fmt.Println(req.PostFormValue("description"));
+		fmt.Println(req.PostFormValue("image"));
+		fmt.Println(req.PostFormValue("tags"));
 	}
 }
 
@@ -93,5 +103,6 @@ func main(){
 	m.Handle("/login",l)
 	m.Handle("/logout",logout)
 	m.Handle("/create-new",newblog)
+	m.Handle("/save-blog",newblog)
 	http.ListenAndServe(":8002",m)
 }

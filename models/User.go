@@ -3,7 +3,7 @@ package models
 import(
 // "reflect"
 "fmt"
-"first_web_app/core"
+db "first_web_app/core/mongodb"
 )
 
 type User struct {
@@ -14,7 +14,12 @@ type User struct {
 }
 
 func (u User) Save () (User, error){
-	result := core.Save("insert into userinfo(username, password, email) values(?,?,?)", u.Name,u.Password,u.Email)
+	data = map[string]interface{}{
+		"username": u.Name,
+		"email":u.Email,
+		"password":u.Password
+	}
+	result := db.Save("userinfo", data)
 		u.Uid = result
 		return u, nil
 }
@@ -26,28 +31,11 @@ func (u User) Validate() (bool,error){
 
 func (u User) Find(condition map[string]string) (User, error){
 	query := "select * from userinfo where "
-	attached_and := false
-	and_clause := ""
-	for key, value := range condition {
-		fmt.Println(key+value)
-		if(attached_and == true){
-			and_clause = " and "
-		}
-		query += and_clause + key + "='" + value + "'" 
-		attached_and = true
-	}
+	
 	query += "Limit 1"
-	result, _ := core.Execute(query)
-	for result.Next() {
-            var uid int64
-            var username string
-            var password string
-            var email string
-            result.Scan(&uid, &username, &password, &email)
-            return User{uid,username,email,password}, nil
-            
-        }
-	return User{},nil
+	result, _ := db.FindOne("userinfo",condition,"*",map[string][int]{"limit":1}, User)
+	
+	return result,nil
 	
 }
 
